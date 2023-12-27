@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 
 function App() {
   const [productList, setProductList] = useState([]);
+
   const getProductData = async () => {
     const result = await axios.get("http://localhost:4001/products");
     setProductList(result.data.data);
@@ -13,7 +14,15 @@ function App() {
   }, [productList]);
 
   const deleteProduct = async (productID) => {
-    await axios.delete(`http://localhost:4001/products/${productID}`);
+    try {
+      await axios.delete(`http://localhost:4001/products/${productID}`);
+      const newProductData = productList.filter((product) => {
+        return product.id !== id;
+      });
+      setProductList(newProductData);
+    } catch {
+      console.log("Failed to delete");
+    }
   };
 
   return (
